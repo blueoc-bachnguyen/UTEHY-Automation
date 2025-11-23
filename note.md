@@ -1,0 +1,1 @@
+- page: khai báo locator; step cơ bản của feature để kế thừa

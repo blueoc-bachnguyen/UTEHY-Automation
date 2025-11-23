@@ -66,3 +66,12 @@ yarn playwright test --ui
 ## Exercise
 
 ### Complete the excercise. SEE [HERE](exercise.md)
+
+
+npm install
+npm ci
+npx playwright install
+npm run test            # run tests headless
+npm run test:headed     # run with visible browser
+npm run test:report     # generate html report
+npx playwright show-report
