@@ -11,3 +11,7 @@ dist/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+.history/
+package-lock.json
+allure-results
