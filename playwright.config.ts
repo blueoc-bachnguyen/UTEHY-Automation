@@ -1,76 +1,53 @@
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
+  /* Chạy các file song song */
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  /* Nếu trên CI mà lỡ để test.only thì fail luôn */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  /* Trên CI thì retry 2 lần, local thì 0 */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
+  /* CI chạy 1 worker cho ổn định hơn */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { outputFolder: 'playwright-report' }]],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+  /* Reporter */
+  reporter: [
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ],
+
+  /* Cấu hình dùng chung cho tất cả project/browsers */
+  use: {
+    /* Base URL cho saucedemo – rất quan trọng */
+    baseURL: 'https://www.saucedemo.com',
+
+    /* Bật trace khi test fail (xem lại flow chạy) */
+    trace: 'retain-on-failure',
+
+    /* Screenshot khi fail */
+    screenshot: 'only-on-failure',
+
+    /* Video khi fail */
+    video: 'retain-on-failure',
   },
 
-  /* Configure projects for major browsers */
+  /* Chạy trên 3 browser: chromium, firefox, webkit */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /* Nếu sau này test web local thì bật phần này lên */
   // webServer: {
   //   command: 'npm run start',
   //   url: 'http://localhost:3000',
