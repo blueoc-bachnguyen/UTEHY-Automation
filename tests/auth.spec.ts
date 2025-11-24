@@ -42,7 +42,7 @@ test.describe('Login Page', () => {
 
     await inventory.waitForLoaded();
 
-    await page.reload();
+    await page.goto(page.url());
 
     await inventory.waitForLoaded();
     await expect(page).toHaveURL(/inventory\.html/);
