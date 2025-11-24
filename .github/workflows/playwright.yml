@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" 
 
 jobs:
   test:
@@ -31,7 +31,7 @@ jobs:
     - name: Run Playwright tests
       run: |
         yarn playwright test --reporter=html,json
-      continue-on-error: false  
+      continue-on-error: false 
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v4
