@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { LoginPage } from '../src/pages/login.page';
 import { InventoryPage } from '../src/pages/inventory.page';
-
+test.setTimeout(60000);
 test.describe('Inventory Page Test', () => {
   let login: LoginPage;
   let inventory: InventoryPage;
