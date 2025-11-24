@@ -20,6 +20,7 @@ export class ProductsPage extends BasePage {
   }
 
   async sort(option: 'lohi' | 'hilo' | 'az' | 'za') {
+    await this.sortSelect.waitFor({ state: 'visible', timeout: 10000 });
     await this.sortSelect.selectOption(option);
   }
 

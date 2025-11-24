@@ -35,5 +35,9 @@ export class BasePage {
     return 0;
   }
 
-  async navigateTo(path: string) { await this.page.goto(path); }
+   // CẬP NHẬT HÀM NÀY
+  async navigateTo(path: string) {
+    // Thêm { waitUntil: 'domcontentloaded' } để không chờ load hết ảnh/script nặng
+    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+  }
 }
