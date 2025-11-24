@@ -1,22 +1,28 @@
-import { Page, expect } from '@playwright/test';
-import { BasePage } from '../page/base.page';
+import { BasePage } from './base.page';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class LoginPage extends BasePage {
-private usernameInput = this.page.locator('#user-name');
-private passwordInput = this.page.locator('#password');
-private loginButton = this.page.locator('#login-button');
-private errorMessage = this.page.locator('[data-test="error"]');
+  private username: Locator;
+  private password: Locator;
+  private loginBtn: Locator;
+  private errorMsg: Locator;
 
+  constructor(page: Page) {
+    super(page);
+    this.username = page.locator('#user-name');
+    this.password = page.locator('#password');
+    this.loginBtn = page.locator('#login-button');
+    this.errorMsg = page.locator('[data-test="error"]');
+  }
 
-async login(username: string, password: string) {
-await this.usernameInput.fill(username);
-await this.passwordInput.fill(password);
-await this.loginButton.click();
-}
+  async login(user: string, pass: string) {
+    await this.username.fill(user);
+    await this.password.fill(pass);
+    await this.loginBtn.click();
+  }
 
-
-async expectErrorContains(text: string) {
-await expect(this.errorMessage).toBeVisible();
-await expect(this.errorMessage).toContainText(text);
-}
+  async expecErrorContains(text: string) {
+    await expect(this.errorMsg).toBeVisible();
+    await expect(this.errorMsg).toContainText(text);
+  }
 }

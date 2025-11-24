@@ -1,17 +1,34 @@
 import { BasePage } from './base.page';
-
+import { Locator, Page } from '@playwright/test';
 
 export class CartPage extends BasePage {
-private cartItems = this.page.locator('.cart_item');
-private checkoutButton = this.page.locator('[data-test="checkout"]');
+  private items: Locator;
+  private checkoutBtn: Locator;
 
+  constructor(page: Page) {
+    super(page);
+    this.items = page.locator('.cart_item'); 
+    this.checkoutBtn = page.locator('[data-test="checkout"]');
+  }
 
-async removeItem(name: string) {
-await this.cartItems.filter({ hasText: name }).locator('button').click();
-}
+  async removeItem(name: string) {
+    await this.items
+      .filter({ hasText: name })
+      .locator('[data-test^="remove"]')       
+      .click();
+  }
 
+  async checkOut() {
+    await this.checkoutBtn.click();
+  }
 
-async checkout() {
-await this.checkoutButton.click();
-}
+  getItemName(name: string): Locator {
+    return this.items
+      .filter({ hasText: name })
+      .locator('.inventory_item_name');   
+  }
+
+  async getItemCount(): Promise<number> {
+    return await this.items.count();
+  }
 }
