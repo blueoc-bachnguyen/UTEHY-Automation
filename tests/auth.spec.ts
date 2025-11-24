@@ -32,7 +32,7 @@ test.describe('Login Page', () => {
     await loginPage.expecErrorContains('user has been locked out.');
   });
 
-  test('session persistence after reload', async ({ page }) => {
+  test('session persistence after reload', async ({ page, browserName }) => {
     const loginPage = new LoginPage(page);
     const inventory = new InventoryPage(page);
 
@@ -42,7 +42,11 @@ test.describe('Login Page', () => {
 
     await inventory.waitForLoaded();
 
-    await page.reload();
+    if (browserName === 'webkit') {
+      await page.goto(page.url(), { waitUntil: 'load' });
+    } else {
+      await page.reload();
+    }
 
     await inventory.waitForLoaded();
     await expect(page).toHaveURL(/inventory\.html/);
