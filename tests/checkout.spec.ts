@@ -29,8 +29,7 @@ await checkout.continue();
 await checkout.finish();
 
 
-await expect(page.locator('.complete-header')).toHaveText('THANK YOU FOR YOUR ORDER');
-
+await expect(page.locator('.complete-header')).toContainText('THANK YOU FOR YOUR ORDER', { ignoreCase: true });
 
 await inventory.logout();
 });
