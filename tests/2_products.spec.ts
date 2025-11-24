@@ -13,15 +13,28 @@ test.describe('2. Product & Cart Tests', () => {
     await loginPage.navigateTo('/');
   });
 
-  test('Sort Products (Price & Name)', async () => {
+  // SỬA TEST CASE NÀY
+  test('Sort Products (Price & Name)', async ({ page }) => { // Thêm { page } vào tham số
     await loginPage.login(USERS.STANDARD, PASSWORD);
     
+    // [FIX 1] Thêm dòng này để đợi trang load xong inventory trước khi tìm element
+    await expect(page).toHaveURL('/inventory.html'); 
+    
+    // Code cũ
     await productsPage.sort('lohi');
-    const prices = await productsPage.getPrices();
+    let prices = await productsPage.getPrices();
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
 
+    await productsPage.sort('hilo');
+    prices = await productsPage.getPrices();
+    expect(prices).toEqual([...prices].sort((a, b) => b - a));
+
+    await productsPage.sort('az');
+    let names = await productsPage.getNames();
+    expect(names).toEqual([...names].sort());
+
     await productsPage.sort('za');
-    const names = await productsPage.getNames();
+    names = await productsPage.getNames();
     expect(names).toEqual([...names].sort().reverse());
   });
 

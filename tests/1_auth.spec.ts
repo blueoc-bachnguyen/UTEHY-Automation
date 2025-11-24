@@ -30,9 +30,15 @@ test.describe('1. Authentication Tests', () => {
     await expect(page).toHaveURL(URLS.BASE);
   });
 
+  // SỬA TEST CASE NÀY
   test('Session persistence', async ({ page }) => {
     await loginPage.login(USERS.STANDARD, PASSWORD);
-    await page.reload();
+    await expect(page).toHaveURL(URLS.INVENTORY);
+    
+    // [FIX 2] Thay page.reload() bằng page.goto() để tránh WebKit crash trên Linux
+    // await page.reload();  <-- XÓA DÒNG NÀY
+    await page.goto(URLS.INVENTORY); // <-- DÙNG DÒNG NÀY
+    
     await expect(page).toHaveURL(URLS.INVENTORY);
     await expect(loginPage.cartLink).toBeVisible();
   });
