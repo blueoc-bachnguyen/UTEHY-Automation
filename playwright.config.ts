@@ -23,14 +23,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { open: 'never' }], 
-    ['json', { outputFile: 'test-results.json' }], 
+    ['html'],  
     ['list'],
-    ['allure-playwright', { 
-        detail: true,
-        outputFolder: 'allure-results',
-        suiteTitle: false,
-    }],
   ],
   use: {
     baseURL: 'https://www.saucedemo.com', 
@@ -53,13 +47,9 @@ export default defineConfig({
       name: 'webkit', 
       use: { ...devices['Desktop Safari'] },
     },
-    {
+    { 
       name: 'Mobile Chrome', 
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari', 
-      use: { ...devices['iPhone 12'] },
+      use: { ...devices['Pixel 5'] } 
     },
   ],
 

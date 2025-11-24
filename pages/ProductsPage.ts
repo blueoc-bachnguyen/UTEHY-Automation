@@ -1,71 +1,49 @@
-import { Page, expect, Locator } from '@playwright/test';
-import { BasePage } from './BasePage'; 
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
 export class ProductsPage extends BasePage {
-  readonly page: Page;
-  readonly inventoryItems: Locator;
-  readonly cartBadge: Locator;
-  readonly sortDropdown: Locator;
-  readonly cartIcon: Locator;
+  readonly sortSelect: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.page = page;
-    this.inventoryItems = page.locator('.inventory_item');
-    this.cartBadge = page.locator('.shopping_cart_badge');
-    this.sortDropdown = page.locator('[data-test="product_sort_container"]');
-    this.cartIcon = page.locator('.shopping_cart_link');
+    this.sortSelect = page.locator('[data-test="product_sort_container"]');
   }
 
-  async navigate() {
-    await this.page.goto('/inventory.html');
-    await expect(this.page).toHaveURL('/inventory.html');
+  async addProduct(name: string) {
+    const id = name.toLowerCase().replace(/ /g, '-');
+    await this.page.locator(`[data-test="add-to-cart-${id}"]`).click();
   }
 
-  async addProductToCart(productName: string) {
-    const productItem = this.page.locator('.inventory_item', { hasText: productName });
-    await productItem.locator('button[data-test^="add-to-cart"]').click();
+  async removeProduct(name: string) {
+    const id = name.toLowerCase().replace(/ /g, '-');
+    await this.page.locator(`[data-test="remove-${id}"]`).click();
   }
 
-  async removeProductFromCart(productName: string) {
-    const productItem = this.page.locator('.inventory_item', { hasText: productName });
-    await productItem.locator('button[data-test^="remove"]').click();
+  async sort(option: 'lohi' | 'hilo' | 'az' | 'za') {
+    await this.sortSelect.selectOption(option);
   }
 
-  async expectCartBadgeCount(count: number) {
-    if (count === 0) {
-      await expect(this.cartBadge).not.toBeVisible();
-    } else {
-      await expect(this.cartBadge).toHaveText(count.toString());
-    }
+  async getPrices(): Promise<number[]> {
+    const texts = await this.page.locator('.inventory_item_price').allInnerTexts();
+    return texts.map(t => parseFloat(t.replace('$', '')));
   }
 
-  async sortProducts(option: 'az' | 'za' | 'lohi' | 'hilo') {
-    await this.sortDropdown.selectOption({ value: option });
+  async getNames(): Promise<string[]> {
+    return await this.page.locator('.inventory_item_name').allInnerTexts();
   }
 
-  async verifyProductDetails(productName: string, description: string, price: string) {
-    const productItem = this.page.locator('.inventory_item', { hasText: productName });
-    await expect(productItem.locator('.inventory_item_desc')).toHaveText(description);
-    await expect(productItem.locator('.inventory_item_price')).toHaveText(price);
-  }
-
-  async goToProductDetails(productName: string) {
-    const productItem = this.page.locator('.inventory_item', { hasText: productName });
-    await productItem.locator('.inventory_item_name').click();
-  }
-
-  async verifyProductImagesLoaded() {
-    const images = await this.page.locator('.inventory_item_img').all();
+  // Check ảnh lỗi (Problem User requirement)
+  async checkImagesLoaded(): Promise<boolean> {
+    const images = await this.page.locator('.inventory_item_img img').all();
     for (const img of images) {
-      await expect(img).toBeVisible();
       const src = await img.getAttribute('src');
-      expect(src).not.toBeNull();
-      expect(src).not.toBe('');
+      // SauceDemo quy ước ảnh lỗi sẽ dùng link này
+      if (src?.includes('sl-404') || src?.includes('garbage')) return false;
+      
+      // Hoặc check naturalWidth
+      const width = await img.evaluate((node: HTMLImageElement) => node.naturalWidth);
+      if (width === 0) return false;
     }
-  }
-
-  async goToCart() {
-    await this.cartIcon.click();
+    return true;
   }
 }

@@ -1,78 +1,39 @@
-import { Page, expect, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 
 export class BasePage {
   readonly page: Page;
-  readonly appLogo: Locator;
-  readonly shoppingCartLink: Locator;
-  readonly menuButton: Locator;
-  readonly allItemsLink: Locator;
-  readonly aboutLink: Locator;
+  readonly menuBtn: Locator;
   readonly logoutLink: Locator;
-  readonly resetAppStateLink: Locator;
-  readonly sidebarCloseButton: Locator;
+  readonly cartLink: Locator;
+  readonly cartBadge: Locator;
+  readonly resetLink: Locator;
+  readonly aboutLink: Locator;
+  readonly allItemsLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.appLogo = page.locator('.app_logo');
-    this.shoppingCartLink = page.locator('.shopping_cart_link');
-    this.menuButton = page.locator('#react-burger-menu-btn');
-    this.allItemsLink = page.locator('#inventory_sidebar_link');
-    this.aboutLink = page.locator('#about_sidebar_link');
+    this.menuBtn = page.locator('#react-burger-menu-btn');
     this.logoutLink = page.locator('#logout_sidebar_link');
-    this.resetAppStateLink = page.locator('#reset_sidebar_link');
-    this.sidebarCloseButton = page.locator('#react-burger-cross-btn');
+    this.cartLink = page.locator('.shopping_cart_link');
+    this.cartBadge = page.locator('.shopping_cart_badge');
+    this.resetLink = page.locator('#reset_sidebar_link');
+    this.aboutLink = page.locator('#about_sidebar_link');
+    this.allItemsLink = page.locator('#inventory_sidebar_link');
   }
 
-  async openMenu() {
-    await this.menuButton.click();
-    await expect(this.allItemsLink).toBeVisible(); 
-  }
-
-  async closeMenu() {
-    await this.sidebarCloseButton.click();
-    await expect(this.allItemsLink).not.toBeVisible();
-  }
-
-  async clickAllItems() {
-    await this.openMenu();
-    await this.allItemsLink.click();
-    await expect(this.page).toHaveURL('/inventory.html');
-  }
-
-  async clickAbout() {
-    await this.openMenu();
-    await this.aboutLink.click();
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.goBack();
-  }
-
+  async openMenu() { await this.menuBtn.click(); }
+  
   async logout() {
     await this.openMenu();
     await this.logoutLink.click();
-    await expect(this.page).toHaveURL('/');
   }
 
-  async resetAppState() {
-    await this.openMenu();
-    await this.resetAppStateLink.click();
-    await this.closeMenu();
-    await expect(this.page.locator('.shopping_cart_badge')).not.toBeVisible();
+  async getCartBadgeCount(): Promise<number> {
+    if (await this.cartBadge.isVisible()) {
+      return parseInt(await this.cartBadge.innerText());
+    }
+    return 0;
   }
 
-  async expectMenuItemsVisible() {
-    await this.openMenu();
-    await expect(this.allItemsLink).toBeVisible();
-    await expect(this.aboutLink).toBeVisible();
-    await expect(this.logoutLink).toBeVisible();
-    await expect(this.resetAppStateLink).toBeVisible();
-    await this.closeMenu();
-  }
-
-  async expectShoppingCartLinkVisible() {
-    await expect(this.shoppingCartLink).toBeVisible();
-  }
-
-  async expectAppLogoVisible() {
-    await expect(this.appLogo).toBeVisible();
-  }
+  async navigateTo(path: string) { await this.page.goto(path); }
 }

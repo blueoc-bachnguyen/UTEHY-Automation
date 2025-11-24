@@ -16,8 +16,8 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
     "format:all": "prettier --write . && eslint . --ext .ts --fix",
-    "allure:generate": "allure generate allure-results --clean",
-    "allure:open": "allure open allure-report"
+    "allure:generate": "npx allure generate ./allure-results -o ./allure-report --clean",
+    "allure:open": "npx allure open ./allure-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "allure-commandline": "^2.34.1",
-    "allure-playwright": "^2.10.0",
+    "allure-playwright": "^2.15.1",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",

@@ -1,39 +1,23 @@
-import { Page, expect, Locator } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class LoginPage {
-  readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly errorMessage: Locator;
+export class LoginPage extends BasePage {
+  readonly userInp: Locator;
+  readonly passInp: Locator;
+  readonly loginBtn: Locator;
+  readonly errorMsg: Locator;
 
   constructor(page: Page) {
-    this.page = page;
-    this.usernameInput = page.locator('[data-test="username"]');
-    this.passwordInput = page.locator('[data-test="password"]');
-    this.loginButton = page.locator('[data-test="login-button"]');
-    this.errorMessage = page.locator('[data-test="error"]');
+    super(page);
+    this.userInp = page.locator('[data-test="username"]');
+    this.passInp = page.locator('[data-test="password"]');
+    this.loginBtn = page.locator('[data-test="login-button"]');
+    this.errorMsg = page.locator('[data-test="error"]');
   }
 
-  async navigate() {
-    await this.page.goto('/');
-  }
-
-  async login(username: string, password: string) {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
-  }
-
-  async expectErrorMessage(message: string) {
-    await expect(this.errorMessage).toHaveText(message);
-  }
-
-  async expectToBeLoggedIn() {
-    await expect(this.page).toHaveURL('/inventory.html');
-  }
-
-  async expectToBeLoggedOut() {
-    await expect(this.page).toHaveURL('/');
+  async login(u: string, p: string) {
+    await this.userInp.fill(u);
+    await this.passInp.fill(p);
+    await this.loginBtn.click();
   }
 }
