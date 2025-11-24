@@ -54,8 +54,8 @@ test.describe("Authentication", () => {
     await login.goto();
     await login.login("standard_user", "secret_sauce");
 
-    await page.reload();
-
+    await page.goto(page.url(), { waitUntil: "domcontentloaded" });
+    
     await expect(inventory.title).toHaveText("Products");
   });
 });

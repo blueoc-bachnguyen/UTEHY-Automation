@@ -5,14 +5,12 @@ import { CartPage } from "../pages/CartPage";
 
 const USER = { username: "standard_user", password: "secret_sauce" };
 
-// Login trước mỗi test -> sau login sẽ đứng ở trang inventory
 test.beforeEach(async ({ page }) => {
   const login = new LoginPage(page);
   await login.goto();
   await login.login(USER.username, USER.password);
 });
 
-// 1) Add multiple products to cart and verify cart count
 test("Add multiple products to cart and verify cart count", async ({ page }) => {
   const inventory = new InventoryPage(page);
 
@@ -22,7 +20,6 @@ test("Add multiple products to cart and verify cart count", async ({ page }) => 
   await expect(inventory.cartBadge).toHaveText("2");
 });
 
-// 2) Remove product from cart
 test("Remove product from cart", async ({ page }) => {
   const inventory = new InventoryPage(page);
   const cart = new CartPage(page);
@@ -34,7 +31,6 @@ test("Remove product from cart", async ({ page }) => {
   await expect(cart.items).toHaveCount(0);
 });
 
-// 3) Add → remove → add again, verify consistency
 test("Add → remove → add again, verify consistency", async ({ page }) => {
   const inventory = new InventoryPage(page);
   const cart = new CartPage(page);
@@ -50,7 +46,6 @@ test("Add → remove → add again, verify consistency", async ({ page }) => {
   await expect(cart.items).toHaveCount(1);
 });
 
-// 4) Verify product details between listing and detail page
 test("Verify product details between listing and detail page", async ({ page }) => {
   const inventory = new InventoryPage(page);
   const productName = "Sauce Labs Backpack";
@@ -73,7 +68,6 @@ test("Verify product details between listing and detail page", async ({ page }) 
   expect(priceDetail).toBe(priceList);
 });
 
-// 5) SKIP sorting test (vì UI của bạn không có dropdown sort)
 test.skip(
   "Verify product sorting (Price low→high / high→low / A→Z / Z→A)",
   async ({ page }) => {
@@ -81,7 +75,6 @@ test.skip(
   }
 );
 
-// 6) Verify product images load correctly
 test("Verify product images load correctly", async ({ page }) => {
   const images = page.locator(".inventory_item_img img");
   const count = await images.count();
@@ -97,15 +90,12 @@ test("Verify product images load correctly", async ({ page }) => {
   }
 });
 
-// 7) Attempt to add item without login (should not be possible)
 test("Attempt to add item without login (should not be possible)", async ({
   page,
 }) => {
-  // Xóa session để đảm bảo đang logout
   await page.context().clearCookies();
 
   await page.goto("/inventory.html");
 
-  // Chưa login thì phải bị trả về trang login "/"
   await expect(page).toHaveURL("https://www.saucedemo.com/");
 });
