@@ -41,8 +41,7 @@ test.describe('Login Page', () => {
     await expect(page).toHaveURL(/inventory\.html/);
 
     await inventory.waitForLoaded();
-
-    await page.reload();
+    await page.goto('https://www.saucedemo.com/inventory.html');
 
     await inventory.waitForLoaded();
     await expect(page).toHaveURL(/inventory\.html/);
