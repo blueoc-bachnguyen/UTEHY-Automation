@@ -83,8 +83,10 @@ export class InventoryPage extends BasePage {
 
   async imageLoaded(index: number): Promise<boolean> {
     const img = this.inventoryItems.nth(index).locator('img.inventory_item_img');
-    await expect(img).toBeVisible();
 
+    await img.scrollIntoViewIfNeeded();
+
+    await expect(img).toBeVisible();
     return img.evaluate((el: HTMLImageElement) => {
       return el.complete && el.naturalHeight > 0 && el.naturalWidth > 0;
     });

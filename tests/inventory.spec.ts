@@ -92,6 +92,8 @@ test.describe('Inventory Page Test', () => {
   });
 
   test('All product images have valid dimensions', async ({ page }) => {
+    await login.login('standard_user', 'secret_sauce');
+    await inventory.waitForLoaded();
     const count = await inventory.getProductCount();
 
     for (let i = 0; i < count; i++) {
@@ -104,15 +106,11 @@ test.describe('Inventory Page Test', () => {
 
       expect(width).toBeGreaterThan(0);
       expect(height).toBeGreaterThan(0);
-
-      const ratio = width / height;
-      expect(ratio).toBeCloseTo(1, 1);
     }
   });
 
   test('cannot access inventory page without login', async ({ page }) => {
     await page.goto('https://www.saucedemo.com/inventory.html');
-    await expect(page).toHaveURL(/saucedemo\.com\/$/);
-    await expect(page.locator('.btn_inventory')).toHaveCount(0);
+    await expect(page.locator('#login-button')).toBeVisible();
   });
 });

@@ -7,7 +7,7 @@ export class CheckOutPage extends BasePage {
   private postalCode: Locator;
   private continueBtn: Locator;
   private cancelBtn: Locator;
-  private errorMsg: Locator;
+  public errorMsg: Locator;
 
   private itemTotalLabel: Locator;
   private taxLabel: Locator;
