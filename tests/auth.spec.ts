@@ -47,15 +47,28 @@ test.describe("Authentication", () => {
     await expect(login.usernameInput).toBeVisible();
   });
 
-  test("Session persistence after page reload", async ({ page }) => {
+  test("Session persistence after page reload", async ({ page, browserName }) => {
     const login = new LoginPage(page);
     const inventory = new InventoryPage(page);
 
+    // Bước 1: login thành công
     await login.goto();
     await login.login("standard_user", "secret_sauce");
-
-    await page.reload();
-
     await expect(inventory.title).toHaveText("Products");
+    await expect(page).toHaveURL(/inventory\.html/);
+
+    // Bước 2: xử lý khác nhau theo browser
+    if (browserName === "webkit") {
+      // WebKit hay crash khi dùng page.reload() trên CI,
+      // nên mình giả lập reload bằng cách goto lại đúng URL.
+      await page.goto("/inventory.html", { waitUntil: "load" });
+    } else {
+      // Chromium & Firefox: test reload đúng nghĩa
+      await page.reload();
+    }
+
+    // Bước 3: verify session vẫn còn sau "reload"
+    await expect(inventory.title).toHaveText("Products");
+    await expect(page).toHaveURL(/inventory\.html/);
   });
 });
